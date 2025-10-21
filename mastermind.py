@@ -12,7 +12,11 @@ color_set = {
     "O": "Orange",
 }
 
+#checks if players.txt is present in the system, if not, creates one
 def checker_file():
+    if not os.path.exists(players_file):
+        with open(players_file,"w") as file:
+            file.write("Name,Password\n")
     print("Check File")
 
 def encrypt_password():
@@ -21,11 +25,39 @@ def encrypt_password():
 def decrypt_password():
     print("Decrypt Password")
 
-def is_username_exist ():
+#checks if username already exists in players.txt
+def is_username_exist(name):
+    checker_file()
+    with open(players_file,"r") as file:
+        next(file)
+        for line in file:
+            stored_name = line.strip().split(",")[0]
+            if stored_name.lower() == name.lower():
+                return True
+    return False
     print("Check Username")
 
-def save_player ():
+#saves new player to players.txt or prompts if username already exists
+def save_player (name, password):
+    checker_file()
+    if is_username_exist(name):
+        print ("Username already exists. Please log in or try another username.")
+    else:
+        if not name.strip() or not password.strip():
+         raise ValueError("Name or password cannot be empty.")
+        if "," in name or "," in password or "\n" in name or "\n" in password:
+         raise ValueError("Commas and line breaks are not allowed in the name or password.")
+        with open(players_file, "a") as file:
+            file.write(f"{name},{password}\n")
+            print("User successfully registered!")
     print("Save player")
+
+
+#validation to ensure appropriate characters are entered
+try:
+    save_player(input("Please enter your username: "),input('Please enter your password:'))
+except ValueError as e:
+    print(e)
 
 def load_player():
     print("Load player")
