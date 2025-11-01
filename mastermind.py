@@ -11,13 +11,18 @@ color_set = {
     "W": "White",
     "O": "Orange",
 }
+separator = ","
 
 #checks if players.txt is present in the system, if not, creates one
 def checker_file():
     if not os.path.exists(players_file):
         with open(players_file,"w") as file:
-            file.write("Name,Password\n")
-    print("Check File")
+            file.write("")
+        print("Player database not found. File created.")
+    if not os.path.exists(highscores_file):
+        with open(highscores_file,"w") as file:
+            file.write("")
+        print("Highscores database not found. File created.")
 
 def encrypt_password():
     print("Encrypt Password")
@@ -29,28 +34,18 @@ def decrypt_password():
 def is_username_exist(name):
     checker_file()
     with open(players_file,"r") as file:
-        next(file)
         for line in file:
-            stored_name = line.strip().split(",")[0]
+            stored_name = line.strip().split(separator)[0]
             if stored_name.lower() == name.lower():
                 return True
     return False
-    print("Check Username")
+    
 
 #saves new player to players.txt or prompts if username already exists
 def save_player (name, password):
     checker_file()
-    if is_username_exist(name):
-        print ("Username already exists. Please log in or try another username.")
-    else:
-        if not name.strip() or not password.strip():
-         raise ValueError("Name or password cannot be empty.")
-        if "," in name or "," in password or "\n" in name or "\n" in password:
-         raise ValueError("Commas and line breaks are not allowed in the name or password.")
-        with open(players_file, "a") as file:
-            file.write(f"{name},{password}\n")
-            print("User successfully registered!")
-    print("Save player")
+    with open(players_file,"a") as file:
+        file.write(f"{name}{separator}{password}\n")
 
 
 #validation to ensure appropriate characters are entered
@@ -92,8 +87,25 @@ def press_enter():
 def start_game():
     print("Start game")
 
-def register_player():
-    print("Register player")
+def register_player(name, password):
+    checker_file()
+    while True:
+        name = name.strip()
+        password = password.strip()
+
+        if is_username_exist(name):
+            print('Username already exists. Please try again.')
+            continue
+        if not name or password:
+            print('Username or password cannot be empty. Please try again.')
+            continue
+        if separator in name or separator in password or "\n" in name or "\n" in password:
+            print('Commas and line breaks in username or password not allowed. Please try again.')
+
+        save_player(name, password)
+        print("User successfully registered!")
+        break
+
 
 def login_player():
     print("Login player")
