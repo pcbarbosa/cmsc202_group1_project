@@ -1,19 +1,18 @@
-# Global Variables
-players_file = "players.txt"
-highscores_file = "highscores.txt"
-code_length = 4
-max_attempts = 10
-color_set = {
-    "R": "Red",
-    "G": "Green",
-    "B": "Black",
-    "Y": "Yellow",
-    "W": "White",
-    "O": "Orange",
+# Constant variables. Any change here will affect the entire program
+PLAYER_FILE = "players.txt"
+HIGHSCORES_FILE = "highscores.txt"
+SECRET_CODE_LENGTH = 4
+MAX_ATTEMPTS = 10
+CAESAR_SHIFT = 9
+DELIMETER = ":"
+COLOR_SET = { 
+    "R": "Red", 
+    "G": "Green", 
+    "B": "Blue", 
+    "Y": "Yellow", 
+    "W": "White", 
+    "O": "Orange" 
 }
-
-def checker_file():
-    print("Check File")
 
 # Shift each letter in the text by the value of CAESAR_SHIFT while non-letters remain unchanged
 def caesar_shift(text, shift): 
