@@ -1,19 +1,19 @@
-def encrypt_password(password):
-    result=""
-    for ch in password:
-        if 32 <= ord(ch) <= 126:
-            shifted = (ord(ch) - 32 + caesar_shift) % 95 + 32
-            result += chr(shifted)
+def caesar_shift(text, shift): 
+    result = ""
+    for character in text:
+        if "A" <= character <= "Z":
+            result += chr((ord(character) - ord("A") + shift) % 26 + ord("A"))
+        elif "a" <= character <= "z":
+            result += chr((ord(character) - ord("a") + shift) % 26 + ord("a"))
         else:
-            result += ch
+            result += character
+
     return result
 
-def decrypt_password(password):
-    result = ""
-    for ch in password:
-        if 32 <= ord(ch) <= 126:
-            shifted = (ord(ch) - 32 - caesar_shift) % 95 + 32
-            result += chr(shifted)
-        else:
-            result += ch
-    return result
+
+def encrypt_password(password): 
+    return caesar_shift(password, CAESAR_SHIFT)
+
+
+def decrypt_password(password): 
+    return caesar_shift(password, -CAESAR_SHIFT)
