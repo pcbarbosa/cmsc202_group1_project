@@ -1,72 +1,104 @@
-# Global Variables
-players_file = "players.txt"
-highscores_file = "highscores.txt"
-code_length = 4
-max_attempts = 10
-color_set = {
-    "R": "Red",
-    "G": "Green",
-    "B": "Black",
-    "Y": "Yellow",
-    "W": "White",
-    "O": "Orange",
+# Constant variables. Any change here will affect the entire program
+PLAYER_FILE = "players.txt"
+HIGHSCORES_FILE = "highscores.txt"
+SECRET_CODE_LENGTH = 4
+MAX_ATTEMPTS = 10
+CAESAR_SHIFT = 9
+DELIMETER = ":"
+COLOR_SET = { 
+    "R": "Red", 
+    "G": "Green", 
+    "B": "Blue", 
+    "Y": "Yellow", 
+    "W": "White", 
+    "O": "Orange" 
 }
 
-def checker_file():
-    print("Check File")
+
+# Pause the program until the user presses Enter
+def press_continue():
+    input("Press [Enter] to continue ")
+
+
+def validate_file():
+    print("Validate file")
+
+
+def save_record():
+    print("Save Record")
+
+
+def load_records():
+    print("Load Record")
+
+
+def get_record():
+    print("Get Record")
+
+
+def update_record():
+    print("Update Record")
+
+
+def save_player():
+    print("Save Record")
+
+
+def save_player_highscore():
+    print("Save Highscore")
+        
+
+def load_player():
+    print("Load Player")
+
+
+def load_player_highscore():
+    print("Load Highscore")
+
+
+def load_all_player_highscore():
+    print("Load all Highscore")
+
+
+def caesar_shift():
+    print("Caesar Shift")
+
 
 def encrypt_password():
     print("Encrypt Password")
 
+
 def decrypt_password():
     print("Decrypt Password")
 
-def is_username_exist ():
-    print("Check Username")
 
-def save_player ():
-    print("Save player")
+def run_authentication():
+    print("Login or Register")
 
-def load_player():
-    print("Load player")
 
-def load_all_highscores():
-    print("Load all scores")
+def display_leaderboard():
+    print("Display Leaderboard")
 
-def save_all_highscores():
-    print("Save highest score")
-
-def load_player_highscore():
-    print("Load highest score")
-
-def save_player_highscore():
-    print("Save player highest score")
-
-def show_leaderboard():
-    print("Show thee first five players with the highest score")
 
 def generate_secret_code():
-    print("Generate secret code")
+    print("Generate Secret Code")
 
-def give_feedback():
-    print("Show feedback")
 
 def validate_guess():
-    print("Validate guess")
+    print("Validate Guess")
 
-def press_enter():
-    input("Press Enter to continue... ")
 
-def start_game():
-    print("Start game")
+def get_feedback():
+    print("Get Guess Feedback")
 
-def register_player():
-    print("Register player")
 
-def login_player():
-    print("Login player")
+def display_feedback():
+    print("Display Guess Feedback")
 
-def main():
-    print("Main logic contains all functions")
 
-main()
+def display_color_option():
+    print("Display Color Option")
+
+
+def run_game():
+    print("Run Mastermind Game")
