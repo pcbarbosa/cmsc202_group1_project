@@ -88,11 +88,40 @@ def update_record(file_path, key, value):
 def is_username_exist ():
     print("Check Username")
 
-def save_player ():
-    print("Save player")
+def save_player(username, password): 
+    player_record = get_record(PLAYER_FILE, username)
 
-def load_player():
-    print("Load player")
+    if not player_record:
+        encrypted_password = encrypt_password(password) # Encrypt the password using Caesar Cipher
+        save_record(PLAYER_FILE, username, encrypted_password)
+        print(f"Player username [{username}] data has been saved.")
+        return username
+    
+    else:
+        stored_username, stored_password = player_record
+        print(f"Player username [{stored_username}] already exists.")
+        return None
+
+# Load an existing player and verify password
+def load_player(username, password):
+    player_record = get_record(PLAYER_FILE, username)
+
+    if not player_record:
+        print(f"\nPlayer username [{username}] does not exist.")
+        return None
+    
+    else:
+        stored_username, stored_password = player_record
+        decrypted_password = decrypt_password(stored_password)  # Decrypt the password using Caesar Cipher
+
+        # Password is case-sensitive
+        if decrypted_password == password:
+            print(f"\nLogin successful! Welcome back [{stored_username}].")
+            return stored_username
+        
+        else:
+            print("\nPassword is incorrect.")
+            return None
 
 def load_all_highscores():
     print("Load all scores")
