@@ -1,3 +1,5 @@
+import os
+
 # Constant variables. Any change here will affect the entire program
 PLAYER_FILE = "players.txt"
 HIGHSCORES_FILE = "highscores.txt"
@@ -35,6 +37,53 @@ def encrypt_password(password):
 def decrypt_password(password): 
     return caesar_shift(password, -CAESAR_SHIFT)
 
+# Checks to see if players files are present and creates a new file if not
+def validate_file(path):
+    if not os.path.exists(path):
+        with open(path, "w", encoding="utf-8"): 
+            print(f"Created new file called [{path}]")
+
+# Save a new record to the specified file by appending it to the end of the file
+def save_record(file_path, key, value):
+    validate_file(file_path)
+    with open(file_path, "a", encoding="utf-8") as f:
+        f.write(f"{key}{DELIMETER}{value}\n")
+
+# Reads the specified file and returns its contents as a dictionary
+def load_records(file_path):
+    validate_file(file_path)
+    records = {}
+
+    with open(file_path, "r", encoding="utf-8") as f:
+        for record in f:
+            # Process only records that contain the delimiter
+            if DELIMETER in record:
+                key, value = record.strip().split(DELIMETER, 1) # Split the record based on the delimiter
+                records[key] = value # Insert the record into the dictionary
+
+    return records # Return an empty dictionary if not found
+
+# Get a single record as a tuple from the specified file
+def get_record(file_path, key):
+    validate_file(file_path)
+    records = load_records(file_path)  # Load all records from the file as a dictionary
+
+    # Check each record key in a case-insensitive way without modifying the stored key
+    for record_key, record_value in records.items():
+        if record_key.lower() == key.lower():
+            return (record_key, record_value)
+
+    return () # Return an empty tuple if no matching key is found
+
+# Update a record by rewriting the whole file because single entries cannot be edited directly
+def update_record(file_path, key, value): 
+    validate_file(file_path)
+    records = load_records(file_path)  # Load all existing records to use as a reference
+    records[key] = value  # The record data that will be updated with the new value
+
+    with open(file_path, "w", encoding="utf-8") as f:
+        for record_key, record_value in records.items():
+            f.write(f"{record_key}{DELIMETER}{record_value}\n")
 
 def is_username_exist ():
     print("Check Username")
