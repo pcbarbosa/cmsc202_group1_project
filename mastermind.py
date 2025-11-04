@@ -37,7 +37,8 @@ def encrypt_password(password):
 def decrypt_password(password): 
     return caesar_shift(password, -CAESAR_SHIFT)
 
-# Checks to see if players files are present and creates a new file if not
+
+# Check if file exist. If not create an empty txt file and display that it has been created
 def validate_file(path):
     if not os.path.exists(path):
         with open(path, "w", encoding="utf-8"): 
@@ -85,10 +86,9 @@ def update_record(file_path, key, value):
         for record_key, record_value in records.items():
             f.write(f"{record_key}{DELIMETER}{record_value}\n")
 
-def is_username_exist ():
-    print("Check Username")
 
-def save_player(username, password): 
+# Save a new record for the player if it does not already exist
+def save_player(username, password):
     player_record = get_record(PLAYER_FILE, username)
 
     if not player_record:
@@ -101,6 +101,21 @@ def save_player(username, password):
         stored_username, stored_password = player_record
         print(f"Player username [{stored_username}] already exists.")
         return None
+
+
+# Save or update the player's high score depending on whether the record exists
+def save_player_highscore(username, highscore):
+    player_record = get_record(HIGHSCORES_FILE, username)
+
+    if not player_record:
+        save_record(HIGHSCORES_FILE, username, highscore)
+        print(f"Player username [{username}] high score has been saved.")
+
+    else:
+        stored_username, stored_password = player_record
+        update_record(HIGHSCORES_FILE, stored_username, highscore)
+        print(f"Player username [{stored_username}] high score has been updated.")
+        
 
 # Load an existing player and verify password
 def load_player(username, password):
@@ -123,6 +138,21 @@ def load_player(username, password):
             print("\nPassword is incorrect.")
             return None
 
+
+# Load the high score of an existing player
+def load_player_highscore(username):
+    player_record = get_record(HIGHSCORES_FILE, username)
+
+    if not player_record:
+        return 0
+
+    try:
+        stored_username, stored_highscore = player_record
+        return int(stored_highscore) # Convert string to int
+    except Exception:
+        return 0 # Return 0 if the record cannot be loaded or the stored score is invalid
+
+
 # Load all player highscores and return a list of tuple
 def load_all_player_highscore():
     validate_file(HIGHSCORES_FILE)
@@ -136,34 +166,54 @@ def load_all_player_highscore():
 
     return valid_player_records
 
-def save_all_highscores():
-    print("Save highest score")
 
-# Load the high score of an existing player
-def load_player_highscore(username):
-    player_record = get_record(HIGHSCORES_FILE, username)
-    
-    if not player_record:
-        return 0
-    try:
-        stored_username, stored_highscore = player_record
-        return int(stored_highscore) # Convert string to int
-    except Exception:
-        return 0 # Return 0 if the record cannot be loaded or the stored score is invalid
+def run_authentication(mode):
+    while True:
+        if mode == "register":
+            print("\n-------------- Player Registration Screen --------------\n")
+        
+        elif mode == "login":
+            print("\n-------------- Player Login Screen --------------\n")
+        
+        else:
+            return None
 
-# Save or update the player's high score depending on whether the record exists
-def save_player_highscore(username, highscore):
-    player_record = get_record(HIGHSCORES_FILE, username)
+        username = input("Enter your username or enter [E] to go back to the main screen: ").strip()
 
-    if not player_record:
-        save_record(HIGHSCORES_FILE, username, highscore)
-        print(f"Player username [{username}] high score has been saved.")
-    else:
-        stored_username, stored_password = player_record
-        update_record(HIGHSCORES_FILE, stored_username, highscore)
-        print(f"Player username [{stored_username}] high score has been updated.")
+        # Go back to the main screen if the user chooses to exit
+        if username.lower() == "e":
+            return None
 
-def show_leaderboard():
+        # Validate username input
+        if not username:
+            print("Username can't be empty.")
+            continue
+
+        if DELIMETER in username:
+            print(f"Username cannot contain the delimiter character: [{DELIMETER}]")
+            continue
+
+        password = input("Enter password: ").strip()
+
+        # Validate password input
+        if not password:
+            print("Password can't be empty.")
+            continue
+
+        if mode == "register":
+            # Try saving the player record. Returns username if successful, or None if username exists.
+            player_record = save_player(username, password)
+
+        else:
+            # Try loading the player record. Returns username if successful, or None if login failed.
+            player_record = load_player(username, password)
+
+        # Stop the loop once successful
+        if player_record:
+            return player_record
+
+
+def display_leaderboard():
     print("\n-------------- Leaderboard Screen --------------\n")
     highscore_records = load_all_player_highscore()
     # Sort by lowest to highest score and show only the top 5 player records
@@ -174,28 +224,7 @@ def show_leaderboard():
     for username, highscore in sorted_highscore_records:
         print(f"{username:<20}{highscore}")
 
-def generate_secret_code():
-    print("Generate secret code")
 
-def give_feedback():
-    print("Show feedback")
-
-def validate_guess():
-    print("Validate guess")
-
-def press_enter():
-    input("Press Enter to continue... ")
-
-def start_game():
-    print("Start game")
-
-def register_player():
-    print("Register player")
-
-def login_player():
-    print("Login player")
-
-def main():
-    print("Main logic contains all functions")
-
-main()
+# Pause the program until the user presses Enter
+def press_continue():
+    input("Press [Enter] to continue ")
