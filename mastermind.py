@@ -123,20 +123,56 @@ def load_player(username, password):
             print("\nPassword is incorrect.")
             return None
 
-def load_all_highscores():
-    print("Load all scores")
+# Load all player highscores and return a list of tuple
+def load_all_player_highscore():
+    validate_file(HIGHSCORES_FILE)
+    player_records = load_records(HIGHSCORES_FILE)
+    valid_player_records = {}
+
+    # Convert value from the dictionary to int data type. Skip those that are not int
+    for username, highscore in player_records.items():
+        if str(highscore).isdigit():
+            valid_player_records[username] = int(highscore)
+
+    return valid_player_records
 
 def save_all_highscores():
     print("Save highest score")
 
-def load_player_highscore():
-    print("Load highest score")
+# Load the high score of an existing player
+def load_player_highscore(username):
+    player_record = get_record(HIGHSCORES_FILE, username)
+    
+    if not player_record:
+        return 0
+    try:
+        stored_username, stored_highscore = player_record
+        return int(stored_highscore) # Convert string to int
+    except Exception:
+        return 0 # Return 0 if the record cannot be loaded or the stored score is invalid
 
-def save_player_highscore():
-    print("Save player highest score")
+# Save or update the player's high score depending on whether the record exists
+def save_player_highscore(username, highscore):
+    player_record = get_record(HIGHSCORES_FILE, username)
+
+    if not player_record:
+        save_record(HIGHSCORES_FILE, username, highscore)
+        print(f"Player username [{username}] high score has been saved.")
+    else:
+        stored_username, stored_password = player_record
+        update_record(HIGHSCORES_FILE, stored_username, highscore)
+        print(f"Player username [{stored_username}] high score has been updated.")
 
 def show_leaderboard():
-    print("Show thee first five players with the highest score")
+    print("\n-------------- Leaderboard Screen --------------\n")
+    highscore_records = load_all_player_highscore()
+    # Sort by lowest to highest score and show only the top 5 player records
+    sorted_highscore_records = sorted(highscore_records.items(), key=lambda item: item[1], reverse=False)[:5]
+
+    print(f"{'PLAYER':<20}{'SCORE'}")
+    
+    for username, highscore in sorted_highscore_records:
+        print(f"{username:<20}{highscore}")
 
 def generate_secret_code():
     print("Generate secret code")
