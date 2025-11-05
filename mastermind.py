@@ -1,3 +1,5 @@
+import random
+
 # Constant variables. Any change here will affect the entire program
 PLAYER_FILE = "players.txt"
 HIGHSCORES_FILE = "highscores.txt"
@@ -81,8 +83,9 @@ def display_leaderboard():
 
 
 def generate_secret_code():
-    print("Generate Secret Code")
-
+    color_keys = list(COLOR_SET.keys())
+    secret_code = random.choices(color_keys, k=SECRET_CODE_LENGTH)
+    return "".join(secret_code).upper()
 
 def validate_guess():
     print("Validate Guess")
