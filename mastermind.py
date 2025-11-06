@@ -87,16 +87,105 @@ def generate_secret_code():
     secret_code = random.choices(color_keys, k=SECRET_CODE_LENGTH)
     return "".join(secret_code).upper()
 
-def validate_guess():
-    print("Validate Guess")
+
+def validate_guess(guess):
+    # Validate the guess input
+    if not guess:
+        print(f"\nYour guess should not be empty.")
+        return False
+
+    # Validate the length of the guess
+    if len(guess) != SECRET_CODE_LENGTH:
+        print(f"\nYour guess contain [{SECRET_CODE_LENGTH}] letters.")
+        return False
+
+    invalid_keys = []
+
+    # Collect all invalid color keys
+    for key in guess:
+        if key not in COLOR_SET:
+            invalid_keys.append(key)
+
+    # Validate the guess and display the incorrect color keys
+    if invalid_keys:
+        print("\nInvalid color key in your input.")
+        print("These color keys are invalid:", " ".join(f"[{key}]" for key in invalid_keys))
+        return False
+
+    return True
 
 
-def get_feedback():
-    print("Get Guess Feedback")
+def get_feedback(guess, secret_code):
+    color_counts = {} # Store counts of unmatched colors in the secret code
+    peg_list = [] # List of peg results for the guess
+
+    # Create the default peg list based on the length of the secret code
+    for i in range(SECRET_CODE_LENGTH):
+        peg_list.append("O")
+
+    # Check first for the black peg
+    for i in range(SECRET_CODE_LENGTH):
+        # Insert black peg if guess is correct and in the correct position
+        if guess[i] == secret_code[i]:
+            peg_list[i] = "B"
+        
+        # Track how many times each unmatched color appears in the secret code
+        else:
+            color = secret_code[i]
+            if color not in color_counts:
+                color_counts[color] = 1
+            
+            else:
+                color_counts[color] += 1
+
+    # Check next whether the remaining guess color is white peg or empty peg
+    for i in range(SECRET_CODE_LENGTH):
+        # Skip positions that are already black pegs
+        if peg_list[i] == "B":
+            continue
+
+        guess_color = guess[i]
+        current_color_count = color_counts.get(guess_color, 0)
+
+        # Check whether the guess color has already been use or not
+        if current_color_count > 0:
+            peg_list[i] = "W" # Insert white peg if guess is correct but in the wrong position
+            color_counts[guess_color] -= 1 # Reduce the remaining count for this color to prevent double counting
+        
+        else:
+            peg_list[i] = "O" # Insert an empty peg if the current color's remaining count is 0
+
+    return peg_list
 
 
-def display_feedback():
-    print("Display Guess Feedback")
+def display_feedback(player_attempts, attempt, black_peg_count, white_peg_count):
+    header_width = SECRET_CODE_LENGTH * 5 + 1
+    default_guess = []
+    default_feedback = []
+
+    # Create the default guess result
+    for i in range(SECRET_CODE_LENGTH):
+        default_guess.append("O")
+
+    # Create the default feedback result
+    for i in range(SECRET_CODE_LENGTH):
+        default_feedback.append("O")
+
+    # Display the header
+    print(f"\n{'GUESS':^{header_width}}{'FEEDBACK':^{header_width}}")
+
+    # Display all guesses and their corresponding feedback
+    for i in range(MAX_ATTEMPTS):
+        if i < len(player_attempts):
+            guess_list = player_attempts[i][0]
+            feedback_list = player_attempts[i][1]
+            print(guess_list, feedback_list)
+        
+        else:
+            print(default_guess, default_feedback)
+    
+    # Display the current attempt number and peg counts
+    print(f"\nAttempt Number: [{attempt}/{MAX_ATTEMPTS}] | Black Pegs: [{black_peg_count}] | White Pegs: [{white_peg_count}]")
 
 
 def display_color_option():
