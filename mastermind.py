@@ -189,8 +189,45 @@ def display_feedback(player_attempts, attempt, black_peg_count, white_peg_count)
 
 
 def display_color_option():
-    print("Display Color Option")
+    print (f"Choose [{SECRET_CODE_LENGTH}] colors using the letters below:")
+    for key in COLOR_SET:
+        print(f"[{key}] {COLOR_SET[key]}")
 
 
 def run_game():
-    print("Run Mastermind Game")
+    secret_code = generate_secret_code() # Generate the secret code
+    attempts = 1
+    player_attempts = [] # Stores every guess made by the player
+
+    # Continue the game until the player runs out of attempts
+    while attempts <= MAX_ATTEMPTS:
+        print("\n-------------- Game Screen --------------\n")
+        # print(f"SECRET CODE: [{secret_code}]") # Uncomment this line for testing purposes
+        display_color_option()
+        guess = input(f"\n[Attempt {attempts}/{MAX_ATTEMPTS}] Enter your guess: ").strip().upper()
+
+        # Validate the guess input
+        if not validate_guess(guess):
+            continue
+
+        feedback = get_feedback(guess, secret_code)  # Get the feedback for the guess
+        black_peg_count = feedback.count("B") # Get the number of black pegs
+        white_peg_count = feedback.count("W") # Get the number of white pegs
+        player_attempts.append([list(guess), feedback]) # Record this attempt
+
+        display_feedback(player_attempts, attempts, black_peg_count, white_peg_count)
+        
+        # End the game if the player guesses the correct secret code and return the remaining attempts as their score
+        if black_peg_count == SECRET_CODE_LENGTH:
+            print(f"\nCongratulations! You guessed the secret code [{secret_code}]. Your score is [{attempts}]")
+            press_continue()
+            
+            return attempts
+
+        if attempts == MAX_ATTEMPTS:
+            print(f"\nGame over! The secret code was [{secret_code}]")
+            press_continue()
+            return 0
+        
+        attempts += 1 # Increase the remaining attempt count by 1
+        press_continue()
