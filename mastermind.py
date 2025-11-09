@@ -233,6 +233,37 @@ def display_leaderboard():
 def press_continue():
     input("Press [Enter] to continue ")
 
+# Stores game instructions as a function
+def show_instructions():
+    print('''
+             -------------- MASTERMIND GAME INSTRUCTIONS --------------
+                      
+Welcome to Mastermind! In this game, your goal is to guess a secret sequence of four colors
+within a limited number of tries.
+                      
+SETUP
+A random sequence of four colors will be generated. There are six possible colors to choose from:
+Red (R), Green (G), Blue (B), Yellow (Y), White (W), and Orange (O).
+Note: The colors in the secret code may be repeated.\n
+                      
+HOW TO PLAY
+Type a string of four letters (e.g. RGBY) to make your guess. After each guess, you’ll receive
+feedback in the form of pegs:
+• If you have guessed a correct color in the correct position, a black peg will be placed in the
+position of that color, as indicated by a letter “B”.
+• If you have guessed a correct color in the wrong position, a white peg will be placed in the
+position of that color, as indicated by a letter “W”.
+• If you have guessed a color that is not in the secret code, no pegs will be placed in the
+position of that color, as indicated by “O”.
+                      
+Example: A feedback of “BWOB” means you have guessed two correct colors in the correct
+position, one correct color in the wrong position, and one color not in the secret code.
+                      
+You win when you crack the secret code and collect four black pegs (BBBB) within the guess limit.
+                      
+Challenge your friends in the leaderboards to see who can break the code in the fewest tries!
+''')
+
 
 def generate_secret_code():
     color_keys = list(COLOR_SET.keys())
@@ -398,6 +429,7 @@ def main():
             print("Press the following key to continue:")
             print("[R] Register a new account")
             print("[L] Login to an existing account")
+            print("[H] View game mechanics and instructions")
             print("[E] Exit the program")
 
             choice = input("\nEnter choice: ").strip().lower()
@@ -411,6 +443,11 @@ def main():
                 player_username = run_authentication("login")
                 if player_username:
                     player_highscore = load_player_highscore(player_username)
+            
+            elif choice == "h":
+                show_instructions()
+                press_continue()
+                continue
 
             elif choice == "e":
                 print("\nExiting the program. Goodbye!")
@@ -452,6 +489,7 @@ def main():
 
             elif choice == "d":
                 display_leaderboard()
+            
 
             elif choice == "l":
                 print("\nLogging out!")
