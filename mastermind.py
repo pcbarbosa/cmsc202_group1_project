@@ -461,6 +461,7 @@ def main():
             print("Press the following key to continue:")
             print("[S] Start the game")
             print("[D] Display the leaderboard")
+            print("[H] View game mechanics and instructions")
             print("[L] Logout")
             print("[E] Exit the program")
 
@@ -486,7 +487,12 @@ def main():
 
             elif choice == "d":
                 display_leaderboard()
+                continue
             
+            elif choice == "h":
+                show_instructions()
+                press_continue()
+                continue
 
             elif choice == "l":
                 print("\nLogging out!")
