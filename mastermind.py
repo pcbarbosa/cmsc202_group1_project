@@ -283,7 +283,9 @@ def validate_guess(guess):
 
     # Collect all invalid color keys
     for key in guess:
-        if key not in COLOR_SET:
+        if key not in COLOR_SET: 
+            if key in invalid_keys: 
+                continue
             invalid_keys.append(key)
 
     # Validate the guess and display the incorrect color keys
