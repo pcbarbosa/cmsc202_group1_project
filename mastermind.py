@@ -69,7 +69,6 @@ def load_records(file_path):
 
 # Get a single record as a tuple from the specified file
 def get_record(file_path, key):
-    validate_file(file_path)
     records = load_records(file_path)  # Load all records from the file as a dictionary
 
     # Check each record key in a case-insensitive way without modifying the stored key
@@ -82,7 +81,6 @@ def get_record(file_path, key):
 
 # Update a record by rewriting the whole file because single entries cannot be edited directly
 def update_record(file_path, key, value):
-    validate_file(file_path)
     records = load_records(file_path)  # Load all existing records to use as a reference
     records[key] = value  # The record data that will be updated with the new value
 
@@ -159,7 +157,6 @@ def load_player_highscore(username):
 
 # Load all player highscores and return a list of tuple
 def load_all_player_highscore():
-    validate_file(HIGHSCORES_FILE)
     player_records = load_records(HIGHSCORES_FILE)
     valid_player_records = {}
 
