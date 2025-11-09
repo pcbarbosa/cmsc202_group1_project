@@ -114,7 +114,7 @@ def save_player_highscore(username, highscore):
         print(f"Player username [{username}] high score has been saved.")
 
     else:
-        stored_username, stored_password = player_record
+        stored_username, stored_highscore = player_record
         update_record(HIGHSCORES_FILE, stored_username, highscore)
         print(f"Player username [{stored_username}] high score has been updated.")
         
