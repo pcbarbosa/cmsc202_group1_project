@@ -236,26 +236,24 @@ def show_instructions():
              -------------- MASTERMIND GAME INSTRUCTIONS --------------
                       
 Welcome to Mastermind! In this game, your goal is to guess a secret sequence of four colors
-within a limited number of tries.
+within 10 attempts.
                       
 SETUP
 A random sequence of four colors will be generated. There are six possible colors to choose from:
 Red (R), Green (G), Blue (B), Yellow (Y), White (W), and Orange (O).
-Note: The colors in the secret code may be repeated.\n
+Note: The colors in the secret code may be repeated.
                       
 HOW TO PLAY
 Type a string of four letters (e.g. RGBY) to make your guess. After each guess, you’ll receive
 feedback in the form of pegs:
-• If you have guessed a correct color in the correct position, a black peg will be placed in the
-position of that color, as indicated by a letter “B”.
-• If you have guessed a correct color in the wrong position, a white peg will be placed in the
-position of that color, as indicated by a letter “W”.
-• If you have guessed a color that is not in the secret code, no pegs will be placed in the
-position of that color, as indicated by “O”.
+• B (Black peg) means correct color in the correct position
+• W (White peg) means correct color in the wrong position
+• O (Empty peg) means color is not in the secret code
                       
 Example: A feedback of “BWOB” means you have guessed two correct colors in the correct
 position, one correct color in the wrong position, and one color not in the secret code.
                       
+WINNING
 You win when you crack the secret code and collect four black pegs (BBBB) within the guess limit.
                       
 Challenge your friends in the leaderboards to see who can break the code in the fewest tries!
