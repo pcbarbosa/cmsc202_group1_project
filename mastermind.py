@@ -194,54 +194,57 @@ def run_authentication(mode):
             print(f"Username cannot contain the delimiter character: [{DELIMETER}]")
             continue
 
-        #Register Mode w/ Password Reset 
-        if mode == "register":
-            password = input("Enter password: ").strip()
+        # REGISTER MODE 
+        if mode == "register": 
+            password = input("Enter password: ").strip() 
             if not password: 
-                print("Password can't be empty.")
-                continue
+                print("Password can't be empty.") 
+                continue 
 
-            player_record = save_player(username,password)
-            if player_record:
+            player_record = save_player(username, password)
+            if player_record: 
                 return player_record
+            else: 
+                press_continue() 
+                continue 
+
+        # LOGIN MODE 
+        elif mode == "login": 
+            player_record = get_record(PLAYER_FILE, username) 
+
+        # Check if username exists before asking for password
+ 
+            if not player_record: 
+                print(f"\nPlayer username [{username}] does not exist.") 
+                press_continue() 
+                continue 
+
+        # Only ask password after confirming username 
+        password = input("Enter password: ").strip() 
+        if not password: 
+            print("Password can't be empty.") 
+            continue 
+
+        stored_username, stored_password = player_record 
+        decrypted_password = decrypt_password(stored_password) 
+
+        if decrypted_password == password: 
+            print(f"\nLogin successful! Welcome back [{stored_username}].")
+            return 
+
+        else: 
+            print("\nPassword is incorrect.") 
+            forgot_choice = input("\nForgot your password? [Y/N]: ").strip().lower() 
+            if forgot_choice == "y": 
+                reset_choice = input("Would you like to reset your password? [Y/N]: ").strip().lower()
+                if reset_choice == "y": 
+                    reset_player_password(username) 
+                    press_continue() 
+                    continue 
             
-            else:
-                press_continue()
-                continue
-
-        elif mode == "login":
-            player_record = get_record(PLAYER_FILE, username)
-
-            if not player_record:
-                print (f"\nPlayer username [{username}] does not exist.")
-                press_continue ()
-                
-            password = input("Enter password: ").strip()
-            if not password:
-                print("Password can't be empty.")
-                continue
-
-            stored_username, stored_password = player_record
-            decrypted_password = decrypt_password (stored_password)
-
-            if decrypted_password == password:
-                print(f"\nLogin successful! Welcome back [{stored_username}].")
-                return stored_username
-            
-            else:
-                print("\nPassword is incorrect.")
-                forgot_choice = input("\nForgot your password?[Y/N]: ").strip().lower()
-                if forgot_choice =="y":
-                    reset_choice = input("Would you like to reset your password? [Y/N]: ").strip().lower()
-                    if reset_choice == "y":
-                        reset_player_password(username)
-                        press_continue
-                        continue
-
-                print("Try logging in again.")
-                press_continue()
-                continue
-
+            print("Try logging in again.") 
+            press_continue() 
+            continue
             
 
 def display_leaderboard():
