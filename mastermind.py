@@ -38,18 +38,19 @@ def encrypt_password(password):
 def decrypt_password(password): 
     return caesar_shift(password, -CAESAR_SHIFT)
 
-
 # Check if file exist. If not create an empty txt file and display that it has been created
 def validate_file(path):
     if not os.path.exists(path):
         with open(path, "w", encoding="utf-8"): 
             print(f"Created new file called [{path}]")
 
+
 # Save a new record to the specified file by appending it to the end of the file
 def save_record(file_path, key, value):
     validate_file(file_path)
     with open(file_path, "a", encoding="utf-8") as f:
         f.write(f"{key}{DELIMETER}{value}\n")
+
 
 # Reads the specified file and returns its contents as a dictionary
 def load_records(file_path):
@@ -65,6 +66,7 @@ def load_records(file_path):
 
     return records # Return an empty dictionary if not found
 
+
 # Get a single record as a tuple from the specified file
 def get_record(file_path, key):
     validate_file(file_path)
@@ -77,8 +79,9 @@ def get_record(file_path, key):
 
     return () # Return an empty tuple if no matching key is found
 
+
 # Update a record by rewriting the whole file because single entries cannot be edited directly
-def update_record(file_path, key, value): 
+def update_record(file_path, key, value):
     validate_file(file_path)
     records = load_records(file_path)  # Load all existing records to use as a reference
     records[key] = value  # The record data that will be updated with the new value
@@ -229,7 +232,7 @@ def display_leaderboard():
 # Pause the program until the user presses Enter
 def press_continue():
     input("Press [Enter] to continue ")
-    
+
 
 def generate_secret_code():
     color_keys = list(COLOR_SET.keys())
@@ -380,3 +383,89 @@ def run_game():
         
         attempts += 1 # Increase the remaining attempt count by 1
         press_continue()
+
+        
+def main():
+    is_running = True
+    player_username = None
+    player_highscore = 0
+
+    while is_running:
+
+        # Authentication Loop
+        while not player_username:
+            print("\n-------------- Authentication Screen --------------\n")
+            print("Press the following key to continue:")
+            print("[R] Register a new account")
+            print("[L] Login to an existing account")
+            print("[E] Exit the program")
+
+            choice = input("\nEnter choice: ").strip().lower()
+
+            if choice == "r":
+                player_username = run_authentication("register")
+                if player_username:
+                    player_highscore = 0
+
+            elif choice == "l":
+                player_username = run_authentication("login")
+                if player_username:
+                    player_highscore = load_player_highscore(player_username)
+
+            elif choice == "e":
+                print("\nExiting the program. Goodbye!")
+                is_running = False
+                return
+            
+            else:
+                print (f"\n[{choice}] is not a valid choice. Please try again.")
+
+        # Dashboard Loop
+        while True:
+            print("\n-------------- Dashboard Screen --------------\n")
+            print(f"Player Name: [{player_username}] | High Score: [{'None' if player_highscore == 0 else player_highscore}]\n")
+            print("Press the following key to continue:")
+            print("[S] Start the game")
+            print("[D] Display the leaderboard")
+            print("[L] Logout")
+            print("[E] Exit the program")
+
+            choice = input("\nEnter choice: ").strip().lower()
+
+            if choice == "s":
+                # Start the game to get the score
+                player_new_score = run_game()
+                # Check whether the player manage to guess the secret code
+                if player_new_score != 0:
+                    # Save the new score if player has no highscore yet
+                    if player_highscore == 0:
+                        save_player_highscore(player_username, player_new_score)
+                        player_highscore = player_new_score
+                        print(f"\nCongratulations! You got a new high score: [{player_new_score}]")
+
+                    else:
+                        # Save the score if the new score has lower attempts
+                        if player_new_score < player_highscore:
+                            save_player_highscore(player_username, player_new_score)
+                            player_highscore = player_new_score
+                            print(f"\nCongratulations! You got a new high score: [{player_new_score}]")
+
+            elif choice == "d":
+                display_leaderboard()
+
+            elif choice == "l":
+                print("\nLogging out!")
+                player_username = None
+                player_highscore = 0
+                break
+
+            elif choice == "e":
+                print("\nExiting the program. Goodbye!")
+                is_running = False
+                return
+            
+            else:
+                print (f"\n[{choice}] is not a valid choice. Please try again.")
+
+ 
+main()
