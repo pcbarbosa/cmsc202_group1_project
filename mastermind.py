@@ -7,7 +7,7 @@ HIGHSCORES_FILE = "highscores.txt"
 SECRET_CODE_LENGTH = 4
 MAX_ATTEMPTS = 10
 CAESAR_SHIFT = 9
-DELIMETER = ":"
+DELIMITER = ":"
 COLOR_SET = { 
     "R": "Red", 
     "G": "Green", 
@@ -49,7 +49,7 @@ def validate_file(path):
 def save_record(file_path, key, value):
     validate_file(file_path)
     with open(file_path, "a", encoding="utf-8") as f:
-        f.write(f"{key}{DELIMETER}{value}\n")
+        f.write(f"{key}{DELIMITER}{value}\n")
 
 
 # Reads the specified file and returns its contents as a dictionary
@@ -60,8 +60,8 @@ def load_records(file_path):
     with open(file_path, "r", encoding="utf-8") as f:
         for record in f:
             # Process only records that contain the delimiter
-            if DELIMETER in record:
-                key, value = record.strip().split(DELIMETER, 1) # Split the record based on the delimiter
+            if DELIMITER in record:
+                key, value = record.strip().split(DELIMITER, 1) # Split the record based on the delimiter
                 records[key] = value # Insert the record into the dictionary
 
     return records # Return an empty dictionary if not found
@@ -86,7 +86,7 @@ def update_record(file_path, key, value):
 
     with open(file_path, "w", encoding="utf-8") as f:
         for record_key, record_value in records.items():
-            f.write(f"{record_key}{DELIMETER}{record_value}\n")
+            f.write(f"{record_key}{DELIMITER}{record_value}\n")
 
 
 # Save a new record for the player if it does not already exist
@@ -190,8 +190,8 @@ def run_authentication(mode):
             print("Username can't be empty.")
             continue
 
-        if DELIMETER in username:
-            print(f"Username cannot contain the delimiter character: [{DELIMETER}]")
+        if DELIMITER in username:
+            print(f"Username cannot contain the delimiter character: [{DELIMITER}]")
             continue
 
         password = input("Enter password: ").strip()
