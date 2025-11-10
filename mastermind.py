@@ -244,7 +244,7 @@ Red (R), Green (G), Blue (B), Yellow (Y), White (W), and Orange (O).
 Note: The colors in the secret code may be repeated.
                       
 HOW TO PLAY
-Type a string of four letters (e.g. RGBY) to make your guess. After each guess, you’ll receive
+Type a string of four letters (e.g. RGBY) to make your guess. After each guess, you will receive
 feedback in the form of pegs:
 • B (Black peg) means correct color in the correct position
 • W (White peg) means correct color in the wrong position
@@ -274,7 +274,7 @@ def validate_guess(guess):
 
     # Validate the length of the guess
     if len(guess) != SECRET_CODE_LENGTH:
-        print(f"\nYour guess contain [{SECRET_CODE_LENGTH}] letters.")
+        print(f"\nYour guess should contain [{SECRET_CODE_LENGTH}] letters. Please try again.")
         return False
 
     invalid_keys = []
