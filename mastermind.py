@@ -89,6 +89,21 @@ def update_record(file_path, key, value):
             f.write(f"{record_key}{DELIMITER}{record_value}\n")
 
 
+def validate_player_username(mode, username):
+    player_record = get_record(PLAYER_FILE, username)
+
+    if not mode:
+        return False
+    if mode == "register" and player_record:
+        print(f"Player username [{username}] already exists.")
+        return False
+    if mode == "login" and not player_record:
+        print(f"Player username [{username}] does not exist.")
+        return False
+    else:
+        return True
+
+
 # Save a new record for the player if it does not already exist
 def save_player(username, password):
     player_record = get_record(PLAYER_FILE, username)
@@ -192,6 +207,9 @@ def run_authentication(mode):
 
         if DELIMITER in username:
             print(f"Username cannot contain the delimiter character: [{DELIMITER}]")
+            continue
+        
+        if not validate_player_username(mode, username):
             continue
 
         password = input("Enter password: ").strip()
