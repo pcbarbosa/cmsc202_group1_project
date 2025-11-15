@@ -16,7 +16,8 @@ COLOR_SET = {
     "W": "White", 
     "O": "Orange" 
 }
-
+# Encryption and Decryption functions using Caesar Cipher
+# Tags: #encryption #authentication #complianceandflow
 # Shift each letter in the text by the value of CAESAR_SHIFT while non-letters remain unchanged
 def caesar_shift(text, shift): 
     result = ""
@@ -30,28 +31,30 @@ def caesar_shift(text, shift):
 
     return result
 
-
+# Tags: #encryption #authentication #complianceandflow
 def encrypt_password(password): 
     return caesar_shift(password, CAESAR_SHIFT)
 
-
+# Tags: #decryption #authentication #complianceandflow
 def decrypt_password(password): 
     return caesar_shift(password, -CAESAR_SHIFT)
 
-# Check if file exist. If not create an empty txt file and display that it has been created
+# Tags: #filemanagement #errorhandling #complianceandflow
+# Check if file exists. If not, create an empty txt file
 def validate_file(path):
     if not os.path.exists(path):
         with open(path, "w", encoding="utf-8"): 
-            print(f"Created new file called [{path}]")
+            pass
 
-
+# Key-value record helpers (DRY)
+# Tags: #filemanagement #datastructures #complianceandflow
 # Save a new record to the specified file by appending it to the end of the file
 def save_record(file_path, key, value):
     validate_file(file_path)
     with open(file_path, "a", encoding="utf-8") as f:
         f.write(f"{key}{DELIMITER}{value}\n")
 
-
+# Tags: #filemanagement #datastructures #complianceandflow
 # Reads the specified file and returns its contents as a dictionary
 def load_records(file_path):
     validate_file(file_path)
@@ -66,7 +69,7 @@ def load_records(file_path):
 
     return records # Return an empty dictionary if not found
 
-
+# Tags: #filemanagement #datastructures #complianceandflow
 # Get a single record as a tuple from the specified file
 def get_record(file_path, key):
     records = load_records(file_path)  # Load all records from the file as a dictionary
@@ -78,7 +81,7 @@ def get_record(file_path, key):
 
     return () # Return an empty tuple if no matching key is found
 
-
+# Tags: #filemanagement #datastructures #complianceandflow
 # Update a record by rewriting the whole file because single entries cannot be edited directly
 def update_record(file_path, key, value):
     records = load_records(file_path)  # Load all existing records to use as a reference
@@ -88,7 +91,9 @@ def update_record(file_path, key, value):
         for record_key, record_value in records.items():
             f.write(f"{record_key}{DELIMITER}{record_value}\n")
 
-
+# Player username validation
+# Tags: #authentication #errorhandling #complianceandflow
+# Validate whether the player username can be registered or logged in
 def validate_player_username(mode, username):
     player_record = get_record(PLAYER_FILE, username)
 
@@ -103,7 +108,7 @@ def validate_player_username(mode, username):
     else:
         return True
 
-
+# Tags: #authentication #filemanagement #encryption #complianceandflow
 # Save a new record for the player if it does not already exist
 def save_player(username, password):
     player_record = get_record(PLAYER_FILE, username)
@@ -119,7 +124,8 @@ def save_player(username, password):
         print(f"Player username [{stored_username}] already exists.")
         return None
 
-
+# Player high score management
+# Tags: #scoring #filemanagement #datastructures #complianceandflow
 # Save or update the player's high score depending on whether the record exists
 def save_player_highscore(username, highscore):
     player_record = get_record(HIGHSCORES_FILE, username)
@@ -133,7 +139,8 @@ def save_player_highscore(username, highscore):
         update_record(HIGHSCORES_FILE, stored_username, highscore)
         print(f"Player username [{stored_username}] high score has been updated.")
         
-
+# Returning player authentication
+# Tags: #authentication #filemanagement #encryption #complianceandflow #errorhandling
 # Load an existing player and verify password
 def load_player(username, password):
     player_record = get_record(PLAYER_FILE, username)
@@ -155,7 +162,7 @@ def load_player(username, password):
             print("\nPassword is incorrect.")
             return None
 
-
+# Tags: #scoring #filemanagement #datastructures #errorhandling
 # Load the high score of an existing player
 def load_player_highscore(username):
     player_record = get_record(HIGHSCORES_FILE, username)
@@ -169,7 +176,7 @@ def load_player_highscore(username):
     except Exception:
         return 0 # Return 0 if the record cannot be loaded or the stored score is invalid
 
-
+# Tags: #scoring #filemanagement #datastructures #complianceandflow 
 # Load all player highscores and return a list of tuple
 def load_all_player_highscore():
     player_records = load_records(HIGHSCORES_FILE)
@@ -182,7 +189,8 @@ def load_all_player_highscore():
 
     return valid_player_records
 
-
+# Tags: #authentication #errorhandling #complianceandflow
+# Run the authentication loop for registration or login
 def run_authentication(mode):
     while True:
         if mode == "register":
@@ -231,7 +239,9 @@ def run_authentication(mode):
         if player_record:
             return player_record
 
-
+# Leaderboard display
+# Tags: #scoring #complianceandflow
+# Display the leaderboard screen with the top 5 player records
 def display_leaderboard():
     print("\n-------------- Leaderboard Screen --------------\n")
     highscore_records = load_all_player_highscore()
@@ -248,6 +258,7 @@ def display_leaderboard():
 def press_continue():
     input("Press [Enter] to continue ")
 
+# Game instructions display
 # Stores game instructions as a function
 def show_instructions():
     print('''
@@ -277,13 +288,15 @@ You win when you crack the secret code and collect four black pegs (BBBB) within
 Challenge your friends in the leaderboards to see who can break the code in the fewest tries!
 ''')
 
-
+# Randomizer: Secret code generation
+# Tags: #coregamelogic #complianceandflow
 def generate_secret_code():
     color_keys = list(COLOR_SET.keys())
     secret_code = random.choices(color_keys, k=SECRET_CODE_LENGTH)
     return "".join(secret_code).upper()
 
-
+# Guess validation
+# Tags: #coregamelogic #errorhandling #complianceandflow
 def validate_guess(guess):
     # Validate the guess input
     if not guess:
@@ -306,13 +319,15 @@ def validate_guess(guess):
 
     # Validate the guess and display the incorrect color keys
     if invalid_keys:
-        print("\nInvalid color key in your input.")
+        print("\nInvalid color key in your input. Please try again.")
         print("These color keys are invalid:", " ".join(f"[{key}]" for key in invalid_keys))
         return False
 
     return True
 
-
+# Feedback calculation and handling the non-double-counting rule
+# Tags: #coregamelogic #datastructures #complianceandflow
+# Generate feedback pegs (B/W/O pegs) based on the player's guess and the secret code
 def get_feedback(guess, secret_code):
     color_counts = {} # Store counts of unmatched colors in the secret code
     peg_list = [] # List of peg results for the guess
@@ -336,7 +351,7 @@ def get_feedback(guess, secret_code):
             else:
                 color_counts[color] += 1
 
-    # Check next whether the remaining guess color is white peg or empty peg
+    # Check next whether the remaining guess color is white peg or empty peg without double counting
     for i in range(SECRET_CODE_LENGTH):
         # Skip positions that are already black pegs
         if peg_list[i] == "B":
@@ -345,7 +360,7 @@ def get_feedback(guess, secret_code):
         guess_color = guess[i]
         current_color_count = color_counts.get(guess_color, 0)
 
-        # Check whether the guess color has already been use or not
+        # Check whether the guess color has already been used or not
         if current_color_count > 0:
             peg_list[i] = "W" # Insert white peg if guess is correct but in the wrong position
             color_counts[guess_color] -= 1 # Reduce the remaining count for this color to prevent double counting
@@ -355,7 +370,8 @@ def get_feedback(guess, secret_code):
 
     return peg_list
 
-
+# Feedback display
+# Tags: #coregamelogic #complianceandflow #datastructures
 def display_feedback(player_attempts, attempt, black_peg_count, white_peg_count):
     header_width = SECRET_CODE_LENGTH * 5 + 1
     default_guess = []
@@ -385,13 +401,16 @@ def display_feedback(player_attempts, attempt, black_peg_count, white_peg_count)
     # Display the current attempt number and peg counts
     print(f"\nAttempt Number: [{attempt}/{MAX_ATTEMPTS}] | Black Pegs: [{black_peg_count}] | White Pegs: [{white_peg_count}]")
 
-
+# Color options display
+# Tags: #coregamelogic #complianceandflow
 def display_color_option():
     print (f"Choose [{SECRET_CODE_LENGTH}] colors using the letters below:")
     for key in COLOR_SET:
         print(f"[{key}] {COLOR_SET[key]}")
 
-
+# Game loop
+# Tags: #coregamelogic #scoring #errorhandling #complianceandflow
+# Run the main game loop until the player wins or runs out of attempts
 def run_game():
     secret_code = generate_secret_code() # Generate the secret code
     attempts = 1
@@ -430,7 +449,8 @@ def run_game():
         attempts += 1 # Increase the remaining attempt count by 1
         press_continue()
 
-        
+# Main program loop
+# Tags: #authentication #scoring #complianceandflow       
 def main():
     is_running = True
     player_username = None
